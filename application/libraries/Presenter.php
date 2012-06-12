@@ -8,7 +8,7 @@
  * @subpackage	Libraries
  * @category	Libraries
  * @author		David Wosnitza (@_druu)
- * @link		http://codeigniter.com/user_guide/libraries/encryption.html
+ * @link		https://github.com/druu/ci-presenter/
  */
 class Presenter {
 
@@ -48,13 +48,11 @@ class Presenter {
 	 *
 	 * @param mixed $result_set The actual data which we're working on.
 	 */
-	public function __construct( $result_set = null )
+	public function __construct($result_set = null)
 	{
 		//Do your magic here
 		$this->_result_set = $result_set;
 		$this->is_multi =  is_array($result_set);
-
-
 		$this->ci =& get_instance();
 		log_message('debug', "Presenter Class Initialized");
 	}
@@ -69,10 +67,9 @@ class Presenter {
 	 * @param  string $data      The actual data to work on
 	 * @return Presenter         The actual Presenter object
 	 */
-	public function create ( $presenter, $data)
+	public function create($presenter, $data)
 	{
 		return $this->_load($presenter, $data);
-
 	}
 
 	/**
@@ -81,23 +78,20 @@ class Presenter {
 	 * See create()
 	 *
 	 */
-	private function _load ( $presenter, $data = null )
+	private function _load( $presenter, $data = null )
 	{
 		$classname = $presenter.'_presenter';
 		if (!class_exists($classname))
 		{
-
 			$this->ci->load->file(APPPATH.'/presenters/'.$classname.'.php');
 			log_message('debug', "Presenter: Loaded '$classname'.");
 		}
-
 		if (is_null($data))
 		{
 			return $classname;
 		}
 
 		return new $classname($data);
-
 	}
 
 	/**
@@ -108,7 +102,8 @@ class Presenter {
 	 * @param  mixed $ignore The properties to ignore
 	 * @return Presenter The presenter (let's keep it chainable ;) )
 	 */
-	protected function ignore($ignore){
+	protected function ignore($ignore)
+	{
 		$this->ignore = (array) $ignore;
 		return $this;
 	}
@@ -124,14 +119,17 @@ class Presenter {
 	 * @param  string $html HTML-Snippet to perform transformation callbacks on
 	 * @return string       Concatenated output
 	 */
-	protected function _generate_output( $html ) {
+	protected function _generate_output($html)
+	{
 		$out = '';
-		if ($this->is_multi) {
-
-			foreach ($this->_result_set as $item) {
+		if ($this->is_multi)
+		{
+			foreach ($this->_result_set as $item)
+			{
 				$this->active_item = $item;
 				$tmp = $html;
-				foreach ($item as $key => $value) {
+				foreach ($item as $key => $value)
+				{
 					// skip ignored keys
 					if (in_array($key, $this->ignore))
 					{
@@ -142,7 +140,11 @@ class Presenter {
 					{
 						$value = call_user_func_array(array($this,'transform_'.$key), array($value));
 					}
-					if(is_object($value)) {var_dump($value);die();}
+					if (is_object($value))
+					{
+						var_dump($value);
+						die();
+					}
 					$tmp = str_replace("#$key#", $value, $tmp);
 				}
 				$out .= $tmp;
@@ -161,7 +163,8 @@ class Presenter {
 	{
 		if ($this->is_multi)
 		{
-			foreach ($this->_result_set as $item) {
+			foreach ($this->_result_set as $item)
+			{
 				if ($id === $item->id)
 				{
 					$this->active_item = $id;
@@ -170,6 +173,7 @@ class Presenter {
 				}
 			}
 		}
+
 		log_message('debug', "Presenter: Nothing set.");
 		return null;
 	}
@@ -194,17 +198,16 @@ class Presenter {
 	 */
 	public function __get($property)
 	{
-
 		if (property_exists($this->_result_set, $property))
 		{
-			if (method_exists($this, 'transform_'.$property)) {
-
+			if (method_exists($this, 'transform_'.$property))
+			{
 				$method = array($this, 'transform_'.$property);
 				$arguments = array($this->_result_set->$property);
-
 				return call_user_func_array($method, $arguments);
 			}
-			else {
+			else
+			{
 				return $this->_result_set->$property;
 			}
 		}
@@ -232,13 +235,13 @@ class Presenter {
 		{
 			return $this->__get($property);
 		}
-		else {
+		else
+		{
 			if (property_exists($this->_result_set, $property))
 			{
-				if (method_exists($this, 'transform_'.$property)) {
-
+				if (method_exists($this, 'transform_'.$property))
+				{
 					$method = array($this, 'transform_'.$property);
-
 					return call_user_func_array($method, $value);
 				}
 			}
