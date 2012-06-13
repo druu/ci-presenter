@@ -67,7 +67,7 @@ class Presenter {
 	 * @param  string $data      The actual data to work on
 	 * @return Presenter         The actual Presenter object
 	 */
-	public function create($presenter, $data)
+	public function create($presenter, $data = null)
 	{
 		return $this->_load($presenter, $data);
 	}
