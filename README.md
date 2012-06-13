@@ -135,3 +135,10 @@ Like any other presenter method this should use used in your view like this:
 
 	<?= $presenter->list_items() ?>
 	
+---
+
+### Special thanks go to:
+
+* [Jamie Rumbelow](https://github.com/jamierumbelow) for giving the concept of presenters!
+* [Marco Monteiro](https://github.com/mpmont) for doing all documentation / corrections! (yes, I'm a lazy ass ;) )
+	
