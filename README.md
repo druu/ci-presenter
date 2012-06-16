@@ -145,7 +145,7 @@ But instead of creating a method in our presenter that contains the HTML-Snippet
 First we create our partial file: `/application/views/partials/example/list_products.php`  
 There are a few rules to follow, which allow to autoload the partials:
 
-* All partials go into `/application/views/partial`
+* All partials go into `/application/views/partials`
 * If our presenter's class is `Example_Presenter`, we have to create a subfolder called `example` in our partials directory
 * Within this directory the partials cann be called whatever you like. Just make sure all filenames end with `.php`
 
