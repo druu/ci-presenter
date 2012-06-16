@@ -135,6 +135,39 @@ Like any other presenter method this should use used in your view like this:
 
 	<?= $presenter->list_items() ?>
 	
+### Looping your data and rendering html WITH PARTIALS
+
+Allright, we want to get rid of that HTML within our presenter. So let's take a look at *partials*. In this example we use the same object collection as above and create the presenter object, which will be passed to the view.  
+But instead of creating a method in our presenter that contains the HTML-Snippet we do this:
+
+**Create the partial**
+
+First we create our partial file: `/application/views/partials/example/list_products.php`  
+There are a few rules to follow, which allow to autoload the partials:
+
+* All partials go into `/application/views/partial`
+* If our presenter's class is `Example_Presenter`, we have to create a subfolder called `example` in our partials directory
+* Within this directory the partials cann be called whatever you like. Just make sure all filenames end with `.php`
+
+Let's make an easy partial containing only this peace of code
+
+    <p>Listing: Product #name# costs #price# </p>
+    
+Note that all properties of our object look like this. `#property_name#`  
+This allows the presenter to replace the keys with our properties' values.
+And if we have matching transformation methods, they will be called too!
+
+So all we have to do now is getting our output.  
+In your view just put this:
+     
+    <?= $presenter->partial('list_products) ?>
+    
+Et voilà, the included magic, and white rabbits have done the rest for you, and **present** you with some nice output.
+
+Tadaaaa.
+
+	
+	
 ---
 
 ### Special thanks go to:

@@ -2,6 +2,14 @@
 
 class Example_Presenter extends Presenter {
 
+
+	public function list_items()
+	{
+		$html = '<p>#key# #name#<br> This item costs: #price#<p>';
+
+		return $this->_generate_output($html);
+	}
+
 	public function transform_price($price)
 	{
 		return $price ? number_format($price, 2, '.', ',').' &euro;' : 'N/A';
@@ -9,7 +17,7 @@ class Example_Presenter extends Presenter {
 
 	public function transform_name($name)
 	{
-		return $name ? $this->key('T2').' '.$name : 'N/A';
+		return $name ? $name : 'N/A';
 	}
 
 	public function transform_key($key)

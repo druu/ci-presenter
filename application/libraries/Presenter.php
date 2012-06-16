@@ -42,18 +42,25 @@ class Presenter {
 	 */
 	protected $ignore = array();
 
+	/**
+	 * Where to look for our partials?
+	 * @var string
+	 */
+	protected $partial_path = NULL;
+
 
 	/**
 	 * Our class constructor
 	 *
 	 * @param mixed $result_set The actual data which we're working on.
 	 */
-	public function __construct($result_set = null)
+	public function __construct($result_set = NULL)
 	{
-		//Do your magic here
+		//Do your magic here		
 		$this->_result_set = $result_set;
 		$this->is_multi =  is_array($result_set);
 		$this->ci =& get_instance();
+		$this->partial_path = $this->_fetch_partial();
 		log_message('debug', "Presenter Class Initialized");
 	}
 
@@ -67,7 +74,7 @@ class Presenter {
 	 * @param  string $data      The actual data to work on
 	 * @return Presenter         The actual Presenter object
 	 */
-	public function create($presenter, $data = null)
+	public function create($presenter, $data = NULL)
 	{
 		return $this->_load($presenter, $data);
 	}
@@ -106,6 +113,22 @@ class Presenter {
 	{
 		$this->ignore = (array) $ignore;
 		return $this;
+	}
+
+	/**
+	 * Partial Renderer
+	 *
+	 * No more HTML in your Presenter!
+	 * Just pass the name of the partial to be loaded and let the magic happen!
+	 * 
+	 * 
+	 * @param  string $partial Name of the partial to be loaded
+	 * @return string          Processed output
+	 */
+	public function partial($partial)
+	{	
+		$html = $this->ci->load->view($this->partial_path.'/'.$partial, NULL, TRUE);
+		return $this->_generate_output($html);
 	}
 
 
@@ -198,7 +221,10 @@ class Presenter {
 	 */
 	public function __get($property)
 	{
-		if (property_exists($this->_result_set, $property))
+		if (
+			is_object($this->_result_set)
+			&& property_exists($this->_result_set, $property)
+		)
 		{
 			if (method_exists($this, 'transform_'.$property))
 			{
@@ -223,6 +249,7 @@ class Presenter {
 	 * MAGIC CALL!
 	 *
 	 * Allows overriding the data while using the shorter call way
+	 * Allows allows magic partial loading
 	 *
 	 *
 	 * @param  string $property The name of the Property
@@ -237,7 +264,10 @@ class Presenter {
 		}
 		else
 		{
-			if (property_exists($this->_result_set, $property))
+			if (
+				is_object($this->_resultset)
+				&& property_exists($this->_result_set, $property)
+			)
 			{
 				if (method_exists($this, 'transform_'.$property))
 				{
@@ -281,6 +311,14 @@ class Presenter {
 
 		return $output;
 	}
+
+	private function _fetch_partial()
+    {
+        if ($this->partial_path == NULL)
+        {
+        	return 'partials/'.preg_replace('/(_p|_presenter|_Presenter)?$/', '', strtolower(get_class($this)));
+        }
+    }
 
 
 }
