@@ -15,7 +15,7 @@ Although probably you want to auto-load this library since you're going to use i
 ### Using a object with the Presenter
 
 	public function index()
-	{	
+	{
 		/*
 		Creating your object
 		Normally this would be a result from a model
@@ -45,14 +45,14 @@ Your presenter must always extend to the presenter library.
 
 
 	<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-	
+
 	class Example_Presenter extends Presenter {
 
 	}
-	
+
 	/* End of file example_presenter.php */
 	/* Location: ./application/presenters/example_presenter.php */
-	
+
 ---
 
 ### AUTOMATICALLY CALLING YOUR METHODS
@@ -69,7 +69,7 @@ Example:
 	$obj->price = 1000;
 
 **The 3 methods in your presenter:**
-	
+
 	public function transform_price($price)
 	{
 		return $price ? number_format($price, 2, '.', ',').' &euro;' : 'N/A';
@@ -84,7 +84,7 @@ Example:
 	{
 		return $key ? '<b>'.$key.'</b>' : 'N/A';
 	}
-	
+
 ### Looping your data and rendering html
 
 At some point we all had a bunch of data that we needed to loop from begining to end and show it in a specific way. That can be achieved with the presenters.
@@ -110,12 +110,12 @@ At some point we all had a bunch of data that we needed to loop from begining to
 	$obj->key = 'T3';
 	$obj->price = 500;
 	array_push($objs, $obj);
-	
+
 **You load your presenter with that object**
 
 	$this->load->library('presenter');
 	$data['presenter'] = $this->presenter->create('example', $objs);
-	
+
 **In your presenter you just have to do this:**
 
 	<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -134,15 +134,15 @@ You just have to wrap your items with a # and your html. Then you just need to r
 Like any other presenter method this should use used in your view like this:
 
 	<?= $presenter->list_items() ?>
-	
+
 ### Looping your data and rendering html WITH PARTIALS
 
-Allright, we want to get rid of that HTML within our presenter. So let's take a look at *partials*. In this example we use the same object collection as above and create the presenter object, which will be passed to the view.  
+Allright, we want to get rid of that HTML within our presenter. So let's take a look at *partials*. In this example we use the same object collection as above and create the presenter object, which will be passed to the view.
 But instead of creating a method in our presenter that contains the HTML-Snippet we do this:
 
 **Create the partial**
 
-First we create our partial file: `/application/views/partials/example/list_products.php`  
+First we create our partial file: `/application/views/partials/example/list_products.php`
 There are a few rules to follow, which allow to autoload the partials:
 
 * All partials go into `/application/views/partials`
@@ -152,26 +152,27 @@ There are a few rules to follow, which allow to autoload the partials:
 Let's make an easy partial containing only this peace of code
 
     <p>Listing: Product #name# costs #price# </p>
-    
-Note that all properties of our object look like this. `#property_name#`  
+
+Note that all properties of our object look like this. `#property_name#`
 This allows the presenter to replace the keys with our properties' values.
 And if we have matching transformation methods, they will be called too!
 
-So all we have to do now is getting our output.  
+So all we have to do now is getting our output.
 In your view just put this:
-     
+
     <?= $presenter->partial('list_products) ?>
-    
+
 Et voilà, the included magic, and white rabbits have done the rest for you, and **present** you with some nice output.
 
 Tadaaaa.
 
-	
-	
+Also, don't forget to watch the screencast on how to use the ci-presenter library. [Vimeo](https://vimeo.com/43767192)
+
+
 ---
 
 ### Special thanks go to:
 
 * [Jamie Rumbelow](https://github.com/jamierumbelow) for giving the concept of presenters!
 * [Marco Monteiro](https://github.com/mpmont) for doing all documentation / corrections! (yes, I'm a lazy ass ;) )
-	
+
