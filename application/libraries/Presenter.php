@@ -48,6 +48,11 @@ class Presenter {
 	 */
 	protected $partial_path = NULL;
 
+	/**
+	 * Storage for Virtual/Composed Properties
+	 * @var array
+	 */
+	protected $v_map = array();
 
 	/**
 	 * Our class constructor
@@ -163,17 +168,23 @@ class Presenter {
 					{
 						$value = call_user_func_array(array($this,'transform_'.$key), array($value));
 					}
-					if (is_object($value))
-					{
-						var_dump($value);
-						die();
-					}
+					
 					$tmp = str_replace("#$key#", $value, $tmp);
 				}
 				$out .= $tmp;
 			}
+
+			foreach ($this->v_map as $key => $value) {
+				if (method_exists($this, 'transform_'.$key))
+				{
+					$value = call_user_func_array(array($this,'transform_'.$key), $value);
+				}
+				$out = str_replace("#$key#", $value, $out);
+				
+			}
 			//$this->active_item = null;
 		}
+		$out = preg_replace('~#\w*#~', '', $out);
 		return $out;
 	}
 
@@ -220,28 +231,72 @@ class Presenter {
 	 * @return mixed
 	 */
 	public function __get($property)
-	{
-		if (
-			is_object($this->_result_set)
-			&& property_exists($this->_result_set, $property)
-		)
-		{
-			if (method_exists($this, 'transform_'.$property))
-			{
-				$method = array($this, 'transform_'.$property);
-				$arguments = array($this->_result_set->$property);
-				return call_user_func_array($method, $arguments);
-			}
-			else
+	{	
+		if (is_object($this->_result_set))
+		{	
+			// Pre-set some common checks and vars
+			$is_raw         = strtolower(substr($property,-4)) === '_raw';
+			$property       = $is_raw ? substr($property, 0, -4) : $property;
+			$trans_method   = 'transform_'.$property;
+			$prop_exists    = property_exists($this->_result_set, $property);
+			$arr_key_exists = array_key_exists($property, $this->v_map);
+			$method_exists  = method_exists($this, 'transform_'.$property);
+			
+
+			// Do we want it RAW?
+			if ( $is_raw && $prop_exists)
 			{
 				return $this->_result_set->$property;
 			}
+
+			// Let's get cracking: Do we have a matching transformation method?
+			if ($method_exists)
+			{	
+				$method = array($this, $trans_method);
+				$arguments = array();
+				
+				// Is it a real property ?
+				if($prop_exists)
+				{
+					$arguments = array($this->_result_set->$property);	
+				}
+				
+				// Or do we have some virtual mapping going on?
+				elseif ($arr_key_exists)
+				{
+					foreach($this->v_map[$property] as $arg) 
+					{
+						$arguments[] = $this->_result_set->$arg;
+					}
+				}
+				
+				// GIMME DAT!
+				return call_user_func_array($method, $arguments);
+			}
+			// Seems like theres no transformation method... Let's try to get at least the raw stuff
+			else {
+				// Again: real property?
+				if($prop_exists)
+				{
+					return $this->_result_set->$property;
+				}
+				// or our beloved V-Map ?
+				elseif ($arr_key_exists)
+				{	
+					$out = array();
+					foreach ($this->v_map[$property] as $arg) 
+					{
+						$out[] = $this->result_set->$arg;
+					}
+					return implode(' ', $out);
+				}
+			}
 		}
-		else
-		{
-			log_message('error', "Presenter: Property '$property' does not exist.");
-			return 'N/A';
-		}
+		
+		// Nope... YOU SCREWED UP!!! FIX THAT! :P
+		log_message('error', "Presenter: Property '$property' does not exist.");
+		return 'N/A';
+		
 	}
 
 

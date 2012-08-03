@@ -1,1 +1,0 @@
-<p>Listing: Product #name# costs #price# </p>
