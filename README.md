@@ -5,11 +5,11 @@ CodeIgniter Presenter Library is a library that will add another layer of abstra
 # Getting ready
 ### Load the library
 
-Just load it Like any other library:
+Just load it like any other library:
 
     $this->load->library('presenter');
 
-Although probably you want to auto-load this library since you're going to use it all the time.
+Although you'll probably want to auto-load this library since you're going to use it all the time.
 
 ---
 
@@ -27,9 +27,9 @@ Your presenter must always extend the presenter library.
 	/* End of file example_presenter.php */
 	/* Location: ./application/presenters/example_presenter.php */
 	
-That's the most basic presenter you can have !
+That's the most basic presenter you can have!
 
-Make sure all your presenters files are in `./application/presenters` and end with `_presenter.php`
+Make sure all your presenter files are in `./application/presenters` and end with `_presenter.php`
 
 ---
 
@@ -76,7 +76,7 @@ That's it. Well yeah, there's no benefit in using a presenter over just outputti
 
 ### Introducing: Transformation methods
 
-If you have your object with 3 properties, and you want to present each one in a different way. For that you just have to create your methods in your presenter with the prefix of **transform_**.
+What if you have an object with 3 properties, and you want to present each one in a different way? For that you just have to create your methods in your presenter with the prefix of **transform_**.
 
 Example:
 
@@ -107,7 +107,7 @@ Example:
 Let's explain this a bit:
 
 * For every property of our data, we have a matching transformation method
-* Transformation methodnames allways look like `transform_<insert propertyname here>`
+* Transformation method names always look like `transform_<insert propertyname here>`
 * A transformation method's only parameter is the value of the according property
 * The `transform_name` method is a bit different, we'll come to that later.
 
@@ -119,12 +119,12 @@ Let's explain this a bit:
 	
     <p>Key: <b>T1</b></p>
 
-Nice, isn't it? Yes, it is. But wait. There's more!
+Nice, isn't it? Yes, it is. But wait... There's more!
 
 ---
 ### Getting the RAW data
-As you might have noticed, your object's data will be allways be 'transformed'. That's totally okay most of the time. But what to do in case you really, really want to get the RAW data?  
-Nothing easier than that: just append `_raw` to your property's name.
+As you might have noticed, your object's data will be always be 'transformed'. That's totally okay most of the time. But what should you do in case you really, really want to get the RAW data?  
+Nothing easier than this: just append `_raw` to your property's name.
 
 **Example:**
  
@@ -147,7 +147,7 @@ All of a sudden you want to output some custom data with the transformation of o
 
     <p>Key: <b>Custom</b></p>
     
-Now, what the hell happened?  
+Now, what the hell happened?
 The Presenter Library has a nifty little feature, which allows you to use your data's properties as a function. This will call the according transformation method with the parameter you passed.
 
 You could call `$presenter->transform_key('Custom')` too, but let's save some typing here and just call the property ;)
@@ -193,7 +193,7 @@ Tadaaaaa :)
 # Using the presenter on a collection of objects
 ### Looping your data and rendering html
 
-At some point we all had a bunch of data that we needed to loop from begining to end and show it in a specific way. That can be achieved with the presenters.
+At some point we all had a bunch of data that we needed to loop from beginning to end and show it in a specific way. That can be achieved with the presenters.
 
 **Imagine you have this object:**
 
@@ -237,7 +237,7 @@ At some point we all had a bunch of data that we needed to loop from begining to
 
 You just have to wrap your items with a # and your html. Then you just need to return your data with the method called **_generate_output();**
 
-Like any other presenter method this should use used in your view like this:
+Like any other presenter method this should be used in your view like this:
 
 	<?= $presenter->list_items() ?>
 ---
@@ -245,7 +245,7 @@ Like any other presenter method this should use used in your view like this:
 
 ### Looping your data and rendering html WITH PARTIALS
 
-Allright, we want to get rid of that HTML within our presenter. So let's take a look at *partials*. In this example we use the same object collection as above and create the presenter object, which will be passed to the view.
+Alright, we want to get rid of that HTML within our presenter. So let's take a look at *partials*. In this example we use the same object collection as above and create the presenter object, which will be passed to the view.
 But instead of creating a method in our presenter that contains the HTML-Snippet we do this:
 
 **Create the partial**
@@ -255,7 +255,7 @@ There are a few rules to follow, which allow to autoload the partials:
 
 * All partials go into `/application/views/partials`
 * If our presenter's class is `Example_Presenter`, we have to create a subfolder called `example` in our partials directory
-* Within this directory the partials cann be called whatever you like. Just make sure all filenames end with `.php`
+* Within this directory the partials can be called whatever you like. Just make sure all filenames end with `.php`
 
 Let's make an easy partial containing only this peace of code
 
@@ -265,7 +265,7 @@ Note that all properties of our object look like this. `#property_name#`
 This allows the presenter to replace the keys with our properties' values.
 And if we have matching transformation methods, they will be called too! Even on virtual properties.
 
-So all we have to do now is getting our output.
+So all we have to do now is get our output.
 In your view just put this:
 
     <?= $presenter->partial('list_products) ?>
