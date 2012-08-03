@@ -62,7 +62,7 @@ Make sure all your presenters files are in `./application/presenters` and end wi
 # Using the Presenter on a single object
 ### The plain basics
 
-With the example above you can start ptinting data in your views like this:
+With the example above you can start printing data in your views like this:
 
     <p>Key: <?= $presenter->key ?></p>
     
@@ -106,7 +106,7 @@ Example:
 	
 Let's explain this a bit:
 
-* To every property of our data, we have a matching transformation method
+* For every property of our data, we have a matching transformation method
 * Transformation methodnames allways look like `transform_<insert propertyname here>`
 * A transformation method's only parameter is the value of the according property
 * The `transform_name` method is a bit different, we'll come to that later.
