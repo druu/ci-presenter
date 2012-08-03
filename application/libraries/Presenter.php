@@ -8,7 +8,9 @@
  * @subpackage	Libraries
  * @category	Libraries
  * @author		David Wosnitza (@_druu)
+ * @copyright   Copyright (c) 2012, David Wosnitza
  * @link		https://github.com/druu/ci-presenter/
+ * @license     MIT http://opensource.org/licenses/MIT
  */
 class Presenter {
 

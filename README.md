@@ -240,6 +240,8 @@ You just have to wrap your items with a # and your html. Then you just need to r
 Like any other presenter method this should use used in your view like this:
 
 	<?= $presenter->list_items() ?>
+---
+
 
 ### Looping your data and rendering html WITH PARTIALS
 
