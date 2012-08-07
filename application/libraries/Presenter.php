@@ -63,7 +63,7 @@ class Presenter {
 	 */
 	public function __construct($result_set = NULL)
 	{
-		//Do your magic here		
+		//Do your magic here
 		$this->_result_set = $result_set;
 		$this->is_multi =  is_array($result_set);
 		$this->ci =& get_instance();
@@ -127,13 +127,13 @@ class Presenter {
 	 *
 	 * No more HTML in your Presenter!
 	 * Just pass the name of the partial to be loaded and let the magic happen!
-	 * 
-	 * 
+	 *
+	 *
 	 * @param  string $partial Name of the partial to be loaded
 	 * @return string          Processed output
 	 */
 	public function partial($partial)
-	{	
+	{
 		$html = $this->ci->load->view($this->partial_path.'/'.$partial, NULL, TRUE);
 		return $this->_generate_output($html);
 	}
@@ -158,6 +158,7 @@ class Presenter {
 			{
 				$this->active_item = $item;
 				$tmp = $html;
+
 				foreach ($item as $key => $value)
 				{
 					// skip ignored keys
@@ -170,22 +171,35 @@ class Presenter {
 					{
 						$value = call_user_func_array(array($this,'transform_'.$key), array($value));
 					}
-					
 					$tmp = str_replace("#$key#", $value, $tmp);
 				}
+
+				// run transformation callbacks on v_map
+				foreach ($this->v_map as $v_key => $v_values)
+				{
+					if (method_exists($this, 'transform_'.$v_key))
+					{
+						$v_values = (array) $v_values;
+						foreach ($v_values as & $v_value)
+						{
+							if (method_exists($this, 'transform_'.$v_value))
+							{
+								$v_value = call_user_func_array(array($this,'transform_'.$v_value), array($item->$v_value));
+							}
+							else
+							{
+								$v_value = $item->$v_value;
+							}
+						}
+
+						$value = call_user_func_array(array($this,'transform_'.$v_key), $v_values);
+					}
+					$tmp = str_replace("#$v_key#", $value, $tmp);
+				}
+
 				$out .= $tmp;
 			}
 
-			foreach ($this->v_map as $key => $value) {
-				if (method_exists($this, 'transform_'.$key))
-				{
-					$value = call_user_func_array(array($this,'transform_'.$key), $value);
-				}
-				$out = str_replace("#$key#", $value, $out);
-				
-			}
-			//$this->active_item = null;
-		}
 		$out = preg_replace('~#\w*#~', '', $out);
 		return $out;
 	}
@@ -233,9 +247,9 @@ class Presenter {
 	 * @return mixed
 	 */
 	public function __get($property)
-	{	
+	{
 		if (is_object($this->_result_set))
-		{	
+		{
 			// Pre-set some common checks and vars
 			$is_raw         = strtolower(substr($property,-4)) === '_raw';
 			$property       = $is_raw ? substr($property, 0, -4) : $property;
@@ -243,7 +257,7 @@ class Presenter {
 			$prop_exists    = property_exists($this->_result_set, $property);
 			$arr_key_exists = array_key_exists($property, $this->v_map);
 			$method_exists  = method_exists($this, 'transform_'.$property);
-			
+
 
 			// Do we want it RAW?
 			if ( $is_raw && $prop_exists)
@@ -253,25 +267,25 @@ class Presenter {
 
 			// Let's get cracking: Do we have a matching transformation method?
 			if ($method_exists)
-			{	
+			{
 				$method = array($this, $trans_method);
 				$arguments = array();
-				
+
 				// Is it a real property ?
 				if($prop_exists)
 				{
-					$arguments = array($this->_result_set->$property);	
+					$arguments = array($this->_result_set->$property);
 				}
-				
+
 				// Or do we have some virtual mapping going on?
 				elseif ($arr_key_exists)
 				{
-					foreach($this->v_map[$property] as $arg) 
+					foreach($this->v_map[$property] as $arg)
 					{
 						$arguments[] = $this->_result_set->$arg;
 					}
 				}
-				
+
 				// GIMME DAT!
 				return call_user_func_array($method, $arguments);
 			}
@@ -284,9 +298,9 @@ class Presenter {
 				}
 				// or our beloved V-Map ?
 				elseif ($arr_key_exists)
-				{	
+				{
 					$out = array();
-					foreach ($this->v_map[$property] as $arg) 
+					foreach ($this->v_map[$property] as $arg)
 					{
 						$out[] = $this->result_set->$arg;
 					}
@@ -294,11 +308,11 @@ class Presenter {
 				}
 			}
 		}
-		
+
 		// Nope... YOU SCREWED UP!!! FIX THAT! :P
 		log_message('error', "Presenter: Property '$property' does not exist.");
 		return 'N/A';
-		
+
 	}
 
 
