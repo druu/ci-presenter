@@ -268,7 +268,7 @@ And if we have matching transformation methods, they will be called too! Even on
 So all we have to do now is get our output.
 In your view just put this:
 
-    <?= $presenter->partial('list_products) ?>
+    <?= $presenter->partial('list_products') ?>
 
 Et voilà, the included magic, and white rabbits have done the rest for you, and **present** you with some nice output.
 
