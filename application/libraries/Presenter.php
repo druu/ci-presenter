@@ -197,11 +197,12 @@ class Presenter {
 					$tmp = str_replace("#$v_key#", $value, $tmp);
 				}
 
-				$out .= $tmp;
-			}
+					$out .= $tmp;
+				}
 
-		$out = preg_replace('~#\w*#~', '', $out);
-		return $out;
+			$out = preg_replace('~#\w*#~', '', $out);
+			return $out;
+		}
 	}
 
 
