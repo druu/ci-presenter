@@ -100,10 +100,6 @@ class Presenter {
 			$this->ci->load->file(APPPATH.'/presenters/'.$classname.'.php');
 			log_message('debug', "Presenter: Loaded '$classname'.");
 		}
-		if (is_null($data))
-		{
-			return $classname;
-		}
 
 		return new $classname($data);
 	}
@@ -197,8 +193,8 @@ class Presenter {
 					$tmp = str_replace("#$v_key#", $value, $tmp);
 				}
 
-					$out .= $tmp;
-				}
+				$out .= $tmp;
+			}
 
 			$out = preg_replace('~#\w*#~', '', $out);
 			return $out;
@@ -312,7 +308,7 @@ class Presenter {
 
 		// Nope... YOU SCREWED UP!!! FIX THAT! :P
 		log_message('error', "Presenter: Property '$property' does not exist.");
-		return 'N/A';
+		return '';
 
 	}
 
@@ -349,7 +345,7 @@ class Presenter {
 			}
 
 			log_message('error', "Presenter: Method '$property' does not exist.");
-			return 'N/A';
+			return '';
 		}
 
 	}
