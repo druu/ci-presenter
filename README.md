@@ -274,6 +274,45 @@ Et voilà, the included magic, and white rabbits have done the rest for you, and
 
 Tadaaaa.
 
+### All spanking new! Mapping different partials conditionally to our items
+
+Suppose we are making a feed and each item needs a different layout? No problem! 
+
+In your `Example_Presenter` create a function called 'map_<name>' with a variable to catch your object.
+
+For example:
+
+    public function map_example($item)
+    {
+    	switch ($item->key)
+    	{
+    		case 'T1':
+    			return 'test_1';
+    			break;
+    		case 'T2':
+    			return 'test_2';
+    			break;
+    		case 'T3':
+    			return 'test_3';
+    			break;
+    		deafult:
+    			return 'test_3';
+    			break;
+       	}
+    }
+
+Now instead of a single partial, create each one you need:
+
+`/application/views/partials/example/test_1.php` 
+`/application/views/partials/example/test_2.php`
+`/application/views/partials/example/test_3.php` 
+
+and just call with:
+
+<?= $presenter->multi_partial('example') ?> 
+
+Beauty, eh? 
+
 Also, don't forget to watch the screencast on how to use the ci-presenter library. [Vimeo](https://vimeo.com/43767192)
 
 
