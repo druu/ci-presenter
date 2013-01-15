@@ -118,6 +118,40 @@ class Presenter {
 		return $this;
 	}
 
+
+	/**
+	 * Multi-Partial Renderer
+	 *
+	 * Allows you to map different partials to each object in a set
+	 *
+	 *
+	 * @param  string $map Name of the mapping function to be loaded
+	 * @return string          Processed output
+	 */
+
+	public function multi_partial($map)
+	{
+
+		$out = '';
+		if ($this->is_multi)
+		{
+			foreach ($this->_result_set as $item)
+			{
+				if (method_exists($this, 'map_'.$map))
+				{
+					$partial = call_user_func_array(array($this,'map_'.$map), array($item));
+				}
+				if (empty($partial)) return $out;
+
+				$html = $this->ci->load->view($this->partial_path.'/'.$partial, NULL, TRUE);
+				$out .= $this->_parse_html($item, $html);	
+			}
+
+			$out = preg_replace('~#\w*#~', '', $out);
+		}
+		return $out;
+	}
+
 	/**
 	 * Partial Renderer
 	 *
@@ -152,53 +186,67 @@ class Presenter {
 		{
 			foreach ($this->_result_set as $item)
 			{
-				$this->active_item = $item;
-				$tmp = $html;
-
-				foreach ($item as $key => $value)
-				{
-					// skip ignored keys
-					if (in_array($key, $this->ignore))
-					{
-						continue;
-					}
-					// run transformation callbacks on fields
-					if (method_exists($this, 'transform_'.$key))
-					{
-						$value = call_user_func_array(array($this,'transform_'.$key), array($value));
-					}
-					$tmp = str_replace("#$key#", $value, $tmp);
-				}
-
-				// run transformation callbacks on v_map
-				foreach ($this->v_map as $v_key => $v_values)
-				{
-					if (method_exists($this, 'transform_'.$v_key))
-					{
-						$v_values = (array) $v_values;
-						foreach ($v_values as & $v_value)
-						{
-							if (method_exists($this, 'transform_'.$v_value))
-							{
-								$v_value = call_user_func_array(array($this,'transform_'.$v_value), array($item->$v_value));
-							}
-							else
-							{
-								$v_value = $item->$v_value;
-							}
-						}
-
-						$value = call_user_func_array(array($this,'transform_'.$v_key), $v_values);
-					}
-					$tmp = str_replace("#$v_key#", $value, $tmp);
-				}
-
-				$out .= $tmp;
+				$out = $this->_parse_html($item, $html);	
 			}
 
 			$out = preg_replace('~#\w*#~', '', $out);
-			return $out;
 		}
+		return $out;
+	}
+
+
+	/**
+	* the engine that actually parses the  html
+	*
+	* @param  string $item - the actual data object
+	* @param  string $html HTML-Snippet to perform transformation callbacks on
+	* @return string       Concatenated output
+	*/
+	protected function _parse_html($item, $html)
+	{
+
+		$this->active_item = $item;
+		$tmp = $html;
+
+		foreach ($item as $key => $value)
+		{
+			// skip ignored keys
+			if (in_array($key, $this->ignore))
+			{
+				continue;
+			}
+			// run transformation callbacks on fields
+			if (method_exists($this, 'transform_'.$key))
+			{
+				$value = call_user_func_array(array($this,'transform_'.$key), array($value));
+			}
+			$tmp = str_replace("#$key#", $value, $tmp);
+		}
+
+		// run transformation callbacks on v_map
+		foreach ($this->v_map as $v_key => $v_values)
+		{
+			if (method_exists($this, 'transform_'.$v_key))
+			{
+				$v_values = (array) $v_values;
+				foreach ($v_values as & $v_value)
+				{
+					if (method_exists($this, 'transform_'.$v_value))
+					{
+						$v_value = call_user_func_array(array($this,'transform_'.$v_value), array($item->$v_value));
+					}
+					else
+					{
+						$v_value = $item->$v_value;
+					}
+				}
+
+				$value = call_user_func_array(array($this,'transform_'.$v_key), $v_values);
+			}
+			$tmp = str_replace("#$v_key#", $value, $tmp);
+		}
+
+		return $tmp;
 	}
 
 
