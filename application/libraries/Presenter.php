@@ -57,6 +57,18 @@ class Presenter {
 	protected $v_map = array();
 
 	/**
+	 * Left delimiter
+	 * @var string
+	 */
+	protected $l_delimiter = '#';
+
+	/**
+	 * Right delimiter
+	 * @var string
+	 */
+	protected $r_delimiter = '#';
+
+	/**
 	 * Our class constructor
 	 *
 	 * @param mixed $result_set The actual data which we're working on.
@@ -101,7 +113,9 @@ class Presenter {
 			log_message('debug', "Presenter: Loaded '$classname'.");
 		}
 
-		return new $classname($data);
+		$classname = new $classname($data);
+		$classname->set_delimiters($this->l_delimiter, $this->r_delimiter);
+		return $classname;
 	}
 
 	/**
@@ -147,7 +161,7 @@ class Presenter {
 				$out .= $this->_parse_html($item, $html);
 			}
 
-			$out = preg_replace('~#\w*#~', '', $out);
+			$out = preg_replace("~{$this->l_delimiter}\w*{$this->r_delimiter}~", '', $out);
 		}
 		return $out;
 	}
@@ -188,8 +202,7 @@ class Presenter {
 			{
 				$out .= $this->_parse_html($item, $html);
 			}
-
-			$out = preg_replace('~#\w*#~', '', $out);
+			$out = preg_replace("~{$this->l_delimiter}\w*{$this->r_delimiter}~", '', $out);
 		}
 		return $out;
 	}
@@ -220,7 +233,7 @@ class Presenter {
 			{
 				$value = call_user_func_array(array($this,'transform_'.$key), array($value));
 			}
-			$tmp = str_replace("#$key#", $value, $tmp);
+			$tmp = str_replace("{$this->l_delimiter}{$key}{$this->r_delimiter}", $value, $tmp);
 		}
 
 		// run transformation callbacks on v_map
@@ -243,7 +256,7 @@ class Presenter {
 
 				$value = call_user_func_array(array($this,'transform_'.$v_key), $v_values);
 			}
-			$tmp = str_replace("#$v_key#", $value, $tmp);
+			$tmp = str_replace("{$this->l_delimiter}{$v_key}{$this->r_delimiter}", $value, $tmp);
 		}
 
 		return $tmp;
@@ -434,6 +447,19 @@ class Presenter {
         {
         	return 'partials/'.preg_replace('/(_p|_presenter|_Presenter)?$/', '', strtolower(get_class($this)));
         }
+    }
+    
+	/**
+	 * Use delimiters of string replace
+	 *
+	 *
+	 * @param  string $l_delimiter
+	 * @param  string $r_delimiter
+	 */
+    public function set_delimiters($l_delimiter, $r_delimiter)
+    {
+        $this->l_delimiter = $l_delimiter;
+        $this->r_delimiter = $r_delimiter;
     }
 
 
