@@ -295,7 +295,7 @@ For example:
     		case 'T3':
     			return 'test_3';
     			break;
-    		deafult:
+    		default:
     			return 'test_3';
     			break;
        	}
