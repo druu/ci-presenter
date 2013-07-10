@@ -147,6 +147,7 @@ class Presenter {
 	{
 
 		$out = '';
+		$html = array();
 		if ($this->is_multi)
 		{
 			foreach ($this->_result_set as $item)
@@ -157,8 +158,8 @@ class Presenter {
 				}
 				if (empty($partial)) return $out;
 
-				$html = $this->ci->load->view($this->partial_path.'/'.$partial, NULL, TRUE);
-				$out .= $this->_parse_html($item, $html);
+				if(!isset($html[$partial])) $html[$partial] = $this->ci->load->view($this->partial_path.'/'.$partial, NULL, TRUE);
+				$out .= $this->_parse_html($item, $html[$partial]);
 			}
 
 			$out = preg_replace("~{$this->l_delimiter}\w*{$this->r_delimiter}~", '', $out);
