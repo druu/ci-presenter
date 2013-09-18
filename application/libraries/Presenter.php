@@ -395,7 +395,7 @@ class Presenter {
 		else
 		{
 			if (
-				is_object($this->_resultset)
+				is_object($this->_result_set)
 				&& property_exists($this->_result_set, $property)
 			)
 			{
