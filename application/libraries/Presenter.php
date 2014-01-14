@@ -229,6 +229,11 @@ class Presenter {
 			{
 				continue;
 			}
+
+            // replace possible RAW occurences;
+            $raw_key = $key . '_raw';
+            $tmp = str_replace("{$this->l_delimiter}${raw_key}{$this->r_delimiter}", $value, $tmp);
+
 			// run transformation callbacks on fields
 			if (method_exists($this, 'transform_'.$key))
 			{
@@ -449,7 +454,7 @@ class Presenter {
         	return 'partials/'.preg_replace('/(_p|_presenter|_Presenter)?$/', '', strtolower(get_class($this)));
         }
     }
-    
+
 	/**
 	 * Use delimiters of string replace
 	 *
