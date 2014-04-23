@@ -231,8 +231,11 @@ class Presenter {
 			}
 
             // replace possible RAW occurences;
-            $raw_key = $key . '_raw';
-            $tmp = str_replace("{$this->l_delimiter}${raw_key}{$this->r_delimiter}", $value, $tmp);
+            if(is_string($value) OR is_numeric($value))
+            {
+            	$raw_key = $key . '_raw';
+            	$tmp = str_replace("{$this->l_delimiter}${raw_key}{$this->r_delimiter}", $value, $tmp);	
+            }
 
 			// run transformation callbacks on fields
 			if (method_exists($this, 'transform_'.$key))
